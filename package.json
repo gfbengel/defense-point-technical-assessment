@@ -1,0 +1,14 @@
+{
+  "name": "@defense-point-technical-assessment/root",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "be": "pnpm --filter @defense-point-technical-assessment/backend",
+    "fe": "pnpm --filter @defense-point-technical-assessment/frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.5.2"
+}
