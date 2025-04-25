@@ -8,6 +8,8 @@ import { DatabaseOptions } from './database-options'
 import { DrizzleService } from './drizzle/drizzle.service'
 import { DrizzleIngredientsRepository } from './drizzle/repositories/drizzle-ingredients.repository'
 import { IngredientsRepository } from '@/domain/repositories/ingredients.repository'
+import { DrizzleRecipesRepository } from './drizzle/repositories/drizzle-recipes.repository'
+import { RecipesRepository } from '@/domain/repositories/recipes.repository'
 
 @Global()
 @Module({
@@ -15,6 +17,7 @@ import { IngredientsRepository } from '@/domain/repositories/ingredients.reposit
     DrizzleService,
 
     IngredientsRepository,
+    RecipesRepository,
   ],
   providers: [
     DrizzleService,
@@ -35,6 +38,10 @@ import { IngredientsRepository } from '@/domain/repositories/ingredients.reposit
     {
       provide: IngredientsRepository,
       useClass: DrizzleIngredientsRepository,
+    },
+    {
+      provide: RecipesRepository,
+      useClass: DrizzleRecipesRepository,
     },
   ],
 })

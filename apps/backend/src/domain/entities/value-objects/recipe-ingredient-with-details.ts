@@ -1,13 +1,19 @@
 import { ValueObject } from "@/core/entities/value-object"
 
 import { RecipeIngredientProps } from "../recipe-ingredient"
+import { UniqueEntityId } from "@/core/entities/unique-entity-id"
 
 interface RecipeIngredientWithDetailsProps extends RecipeIngredientProps {
+  id: UniqueEntityId
   name: string
 }
 
 
 export class RecipeIngredientWithDetails extends ValueObject<RecipeIngredientWithDetailsProps> {
+
+  get id() {
+    return this.props.id
+  }
 
   get recipeId() {
     return this.props.recipeId

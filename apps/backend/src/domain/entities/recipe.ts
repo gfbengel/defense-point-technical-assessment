@@ -8,7 +8,7 @@ export interface RecipeProps {
   description: string
   instructions: string
   timeToCookInMinutes: number
-  image: string
+  image?: string | null
   isFavorite: boolean
 
   createdAt: Date
@@ -41,6 +41,15 @@ export class Recipe extends Entity<RecipeProps> {
 
   get isFavorite() {
     return this.props.isFavorite
+  }
+
+
+  get createdAt() {
+    return this.props.createdAt
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
   }
 
   static create(props: Optional<RecipeProps, 'createdAt' | 'updatedAt'>, id?: UniqueEntityId) {
