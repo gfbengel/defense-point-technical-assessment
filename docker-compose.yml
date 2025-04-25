@@ -1,0 +1,18 @@
+services:
+
+  pg-recipe-app:
+    container_name: pg-recipe-app
+    image: postgres:13.15
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - /data/postgres:/data/postgres
+    env_file:
+      - .env
+    networks:
+      - app
+
+networks:
+  app:
+    name: app
+    driver: bridge
