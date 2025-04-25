@@ -1,5 +1,5 @@
 
-import { boolean, integer, pgTable, text, varchar } from "drizzle-orm/pg-core"
+import { boolean, index, integer, pgTable, text, varchar } from "drizzle-orm/pg-core"
 import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod"
 import { timestampColumns } from "drizzle/helpers/timestamp-columns"
 import { ulidId } from "drizzle/helpers/ulid"
@@ -16,7 +16,9 @@ export const recipes = pgTable('recipes', {
   image: varchar('image', { length: 400 }),
   isFavorite: boolean('is_favorite').notNull().default(false),
   ...timestampColumns,
-})
+}, (t) => ([
+  index('is_favorite_idx').on(t.isFavorite)
+]))
 
 
 export const recipeSelectSchema = createSelectSchema(recipes, {
