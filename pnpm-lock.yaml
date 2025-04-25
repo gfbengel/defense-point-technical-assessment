@@ -37,6 +37,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.2
+      ulidx:
+        specifier: ^2.4.1
+        version: 2.4.1
       zod:
         specifier: ^3.24.3
         version: 3.24.3
@@ -2978,6 +2981,9 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
+  layerr@3.0.0:
+    resolution: {integrity: sha512-tv754Ki2dXpPVApOrjTyRo4/QegVb9eVFq4mjqp4+NM5NaX7syQvN5BBNfV/ZpAHCEHV24XdUVrBAoka4jt3pA==}
+
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
     engines: {node: '>=6'}
@@ -3961,6 +3967,10 @@ packages:
   uint8array-extras@1.4.0:
     resolution: {integrity: sha512-ZPtzy0hu4cZjv3z5NW9gfKnNLjoz4y6uv4HlelAjDK7sY/xOkKZv9xK/WQpcsBB3jEybChz9DPC2U/+cusjJVQ==}
     engines: {node: '>=18'}
+
+  ulidx@2.4.1:
+    resolution: {integrity: sha512-xY7c8LPyzvhvew0Fn+Ek3wBC9STZAuDI/Y5andCKi9AX6/jvfaX45PhsDX8oxgPL0YFp0Jhr8qWMbS/p9375Xg==}
+    engines: {node: '>=16'}
 
   unbzip2-stream@1.4.3:
     resolution: {integrity: sha512-mlExGW4w71ebDJviH16lQLtZS32VKqsSfk80GCfUlwT/4/hNRFsoscrF/c++9xinkMzECL1uL9DDwXqFWkruPg==}
@@ -7227,6 +7237,8 @@ snapshots:
 
   kleur@3.0.3: {}
 
+  layerr@3.0.0: {}
+
   leven@3.1.0: {}
 
   levn@0.4.1:
@@ -8186,6 +8198,10 @@ snapshots:
       '@lukeed/csprng': 1.1.0
 
   uint8array-extras@1.4.0: {}
+
+  ulidx@2.4.1:
+    dependencies:
+      layerr: 3.0.0
 
   unbzip2-stream@1.4.3:
     dependencies:
