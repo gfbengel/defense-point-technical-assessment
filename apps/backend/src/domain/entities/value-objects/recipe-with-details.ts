@@ -1,18 +1,16 @@
 import { ValueObject } from "@/core/entities/value-object";
 
 import { RecipeProps } from "../recipe";
+import { RecipeIngredientWithDetails } from "./recipe-ingredient-with-details";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
-interface RecipeWithIngredientsProps extends Omit<RecipeProps, 'instructions' | 'createdAt' | 'updatedAt'> {
+interface RecipeWithDetailsProps extends RecipeProps {
   id: UniqueEntityId
-  ingredients: {
-    id: UniqueEntityId
-    name: string
-  }[]
+  ingredients: RecipeIngredientWithDetails[]
 }
 
 
 
-export class RecipeWithIngredients extends ValueObject<RecipeWithIngredientsProps> {
+export class RecipeWithDetails extends ValueObject<RecipeWithDetailsProps> {
 
   get id() {
     return this.props.id
@@ -26,6 +24,9 @@ export class RecipeWithIngredients extends ValueObject<RecipeWithIngredientsProp
     return this.props.description
   }
 
+  get instructions() {
+    return this.props.instructions
+  }
 
   get timeToCookInMinutes() {
     return this.props.timeToCookInMinutes
@@ -43,8 +44,8 @@ export class RecipeWithIngredients extends ValueObject<RecipeWithIngredientsProp
     return this.props.ingredients
   }
 
-  static create(props: RecipeWithIngredientsProps) {
-    const recipeWithIngredients = new RecipeWithIngredients(props)
-    return recipeWithIngredients
+  static create(props: RecipeWithDetailsProps) {
+    const recipeWithDetails = new RecipeWithDetails(props)
+    return recipeWithDetails
   }
 }

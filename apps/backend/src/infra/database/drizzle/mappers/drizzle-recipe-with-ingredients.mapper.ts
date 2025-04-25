@@ -1,7 +1,11 @@
-import { RecipeIngredientWithDetails } from "@/domain/entities/value-objects/recipe-ingredient-with-details";
+
 import { RecipeWithIngredients } from "@/domain/entities/value-objects/recipe-with-ingredients";
 import { RecipeWithIngredientsSchema } from "drizzle/schema/extended/recipe-with-ingredients";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
+
+
+
+
 export class DrizzleRecipeWithIngredientsMapper {
   static toDomain(recipe: RecipeWithIngredientsSchema) {
     return RecipeWithIngredients.create(
@@ -9,21 +13,13 @@ export class DrizzleRecipeWithIngredientsMapper {
         id: new UniqueEntityId(recipe.id),
         title: recipe.title,
         description: recipe.description,
-        instructions: recipe.instructions,
         timeToCookInMinutes: recipe.timeToCookInMinutes,
         image: recipe.image,
         isFavorite: recipe.isFavorite,
-        ingredients: recipe.ingredients.map(ingredient => RecipeIngredientWithDetails.create({
+        ingredients: recipe.ingredients.map(ingredient => ({
           id: new UniqueEntityId(ingredient.id),
-          recipeId: new UniqueEntityId(ingredient.recipeId),
-          ingredientId: new UniqueEntityId(ingredient.ingredientId),
-          quantity: ingredient.quantity,
-          unit: ingredient.unit,
           name: ingredient.name,
-        })),
-
-        createdAt: recipe.createdAt,
-        updatedAt: recipe.updatedAt,
+        }))
       }
     )
   }

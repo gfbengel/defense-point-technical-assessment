@@ -33,7 +33,7 @@ export class FetchIngredientsController {
     })
 
     return {
-      items: items.map(IngredientWithRecipeCountPresenter.toHTTP),
+      ingredients: items.map(IngredientWithRecipeCountPresenter.toHTTP),
       totalRowsCount,
     }
   }
