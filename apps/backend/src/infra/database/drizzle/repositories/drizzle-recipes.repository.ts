@@ -3,18 +3,43 @@ import { FindManyRecipesOptions, FindManyRecipesResponse, RecipesRepository } fr
 import { Injectable } from "@nestjs/common";
 import { DrizzleService } from "../drizzle.service";
 import { DrizzleRecipeWithIngredientsMapper } from "../mappers/drizzle-recipe-with-ingredients.mapper";
-import { and, eq, asc, desc, inArray, ilike, isNull, sql, count } from "drizzle-orm";
+import { and, eq, asc, desc, inArray, ilike, isNull, sql, count, not } from "drizzle-orm";
 import { dbSchema } from "drizzle/schema";
 import { DrizzleRecipeWithDetailsMapper } from "../mappers/drizzle-recipe-with-details.mapper";
 import { RecipeWithDetails } from "@/domain/entities/value-objects/recipe-with-details";
-
+import { Recipe } from "@/domain/entities/recipe";
+import { DrizzleRecipeMapper } from "../mappers/drizzle-recipe.mapper";
 
 
 @Injectable()
 export class DrizzleRecipesRepository implements RecipesRepository {
   constructor(private readonly drizzle: DrizzleService) { }
+  async save(recipe: Recipe): Promise<void> {
+    const dto = DrizzleRecipeMapper.toDrizzle(recipe)
 
-  async findById(id: string): Promise<RecipeWithDetails | null> {
+    await this.drizzle.db.update(dbSchema.recipes).set(dto).where(eq(dbSchema.recipes.id, recipe.id.toString()))
+  }
+
+  async findById(id: string): Promise<Recipe | null> {
+    const recipe = await this.drizzle.db.query.recipes.findFirst({
+      where: (recipes, { and, eq, isNull }) => and(eq(recipes.id, id), isNull(recipes.deletedAt))
+    })
+
+    if (!recipe) {
+      return null
+    }
+
+    return DrizzleRecipeMapper.toDomain(recipe)
+  }
+
+  async toggleFavoriteStatus(id: string): Promise<void> {
+    await this.drizzle.db.update(dbSchema.recipes).set({
+      isFavorite: not(dbSchema.recipes.isFavorite)
+    }).where(eq(dbSchema.recipes.id, id))
+
+  }
+
+  async findDetailedById(id: string): Promise<RecipeWithDetails | null> {
 
     const recipe = await this.drizzle.db.query.recipes.findFirst({
       where: (recipes, { and, eq, isNull }) => and(eq(recipes.id, id), isNull(recipes.deletedAt))

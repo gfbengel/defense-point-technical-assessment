@@ -52,6 +52,15 @@ export class Recipe extends Entity<RecipeProps> {
     return this.props.updatedAt
   }
 
+  toggleFavoriteStatus() {
+    this.props.isFavorite = !this.props.isFavorite
+    this.touch()
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date()
+  }
+
   static create(props: Optional<RecipeProps, 'createdAt' | 'updatedAt'>, id?: UniqueEntityId) {
     const recipe = new Recipe(generateEntityTimestamps(props), id)
 

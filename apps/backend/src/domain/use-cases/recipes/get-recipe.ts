@@ -16,7 +16,7 @@ export class GetRecipeUseCase {
   constructor(private readonly recipesRepository: RecipesRepository) { }
 
   async execute(request: GetRecipeUseCaseRequest): Promise<GetRecipeUseCaseResponse> {
-    const recipe = await this.recipesRepository.findById(request.id)
+    const recipe = await this.recipesRepository.findDetailedById(request.id)
 
     if (!recipe) {
       throw new ResourceNotFoundError()
