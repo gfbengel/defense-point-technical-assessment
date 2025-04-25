@@ -6,15 +6,15 @@ import { ConfigurableDatabaseModule, CONNECTION_POOL } from './database.module-d
 import { DATABASE_OPTIONS } from './database.module-definition'
 import { DatabaseOptions } from './database-options'
 import { DrizzleService } from './drizzle/drizzle.service'
-
-
+import { DrizzleIngredientsRepository } from './drizzle/repositories/drizzle-ingredients.repository'
+import { IngredientsRepository } from '@/domain/repositories/ingredients.repository'
 
 @Global()
 @Module({
   exports: [
     DrizzleService,
 
-    //DrizzleEntityRepository
+    IngredientsRepository,
   ],
   providers: [
     DrizzleService,
@@ -32,10 +32,10 @@ import { DrizzleService } from './drizzle/drizzle.service'
         })
       },
     },
-    // {
-    //   provide: EntityRepository,
-    //   useClass: DrizzleEntityRepository,
-    // },
+    {
+      provide: IngredientsRepository,
+      useClass: DrizzleIngredientsRepository,
+    },
   ],
 })
 export class DatabaseModule extends ConfigurableDatabaseModule { }

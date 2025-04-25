@@ -5,7 +5,7 @@ import { generateEntityTimestamps } from "@/core/utils/generate-entity-timestamp
 
 export interface IngredientProps {
   name: string
-  description: string
+  description?: string | null
 
   createdAt: Date
   updatedAt: Date
@@ -21,6 +21,14 @@ export class Ingredient extends Entity<IngredientProps> {
 
   get description() {
     return this.props.description
+  }
+
+  get createdAt() {
+    return this.props.createdAt
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
   }
 
   static create(props: Optional<IngredientProps, 'createdAt' | 'updatedAt'>, id?: UniqueEntityId) {

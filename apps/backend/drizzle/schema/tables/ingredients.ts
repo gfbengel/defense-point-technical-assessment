@@ -1,7 +1,7 @@
 
 import { relations } from "drizzle-orm"
 import { pgTable, text, varchar } from "drizzle-orm/pg-core"
-import { createInsertSchema, createUpdateSchema } from "drizzle-zod"
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod"
 import { timestampColumns } from "drizzle/helpers/timestamp-columns"
 import { ulidId } from "drizzle/helpers/ulid"
 import { z } from "zod"
@@ -15,8 +15,12 @@ export const ingredients = pgTable('ingredients', {
 })
 
 
-
 export const ingredientCreateSchema = createInsertSchema(ingredients, {
+  id: schema => schema.ulid(),
+})
+
+
+export const ingredientSelectSchema = createSelectSchema(ingredients, {
   id: schema => schema.ulid(),
 })
 
@@ -24,8 +28,16 @@ export const ingredientUpdateSchema = createUpdateSchema(ingredients, {
   id: schema => schema.ulid(),
 })
 
-export type IngredientCreateSchema = z.infer<typeof ingredientCreateSchema>
+export const ingredientInsertSchema = createInsertSchema(ingredients, {
+  id: schema => schema.ulid(),
+})
+
+
+export type IngredientSelectSchema = z.infer<typeof ingredientSelectSchema>
 export type IngredientUpdateSchema = z.infer<typeof ingredientUpdateSchema>
+export type IngredientInsertSchema = z.infer<typeof ingredientInsertSchema>
+export type IngredientCreateSchema = z.infer<typeof ingredientCreateSchema>
+
 
 export const ingredientsRelations = relations(ingredients, ({ many }) => {
   return {
