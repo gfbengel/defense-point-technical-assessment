@@ -3,7 +3,7 @@ import { timestampColumns } from "drizzle/helpers/timestamp-columns";
 import { ulidId } from "drizzle/helpers/ulid";
 import { ingredients } from "./ingredients";
 import { recipes } from "./recipes";
-import { createUpdateSchema } from "drizzle-zod";
+import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
 
@@ -37,11 +37,15 @@ export const recipeIngredients = pgTable('recipe_ingredients', {
   ...timestampColumns,
 })
 
+export const recipeIngredientCreateSchema = createInsertSchema(recipeIngredients, {
+  id: schema => schema.ulid(),
+})
 
 export const recipeIngredientUpdateSchema = createUpdateSchema(recipeIngredients, {
   id: schema => schema.ulid(),
 })
 
+export type RecipeIngredientCreateSchema = z.infer<typeof recipeIngredientCreateSchema>
 export type RecipeIngredientUpdateSchema = z.infer<typeof recipeIngredientUpdateSchema>
 
 export const recipeIngredientsRelations = relations(recipeIngredients, ({ one }) => ({

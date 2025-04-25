@@ -1,0 +1,1 @@
+ALTER TABLE "recipes" ADD COLUMN "time_to_cook_in_minutes" integer NOT NULL;
