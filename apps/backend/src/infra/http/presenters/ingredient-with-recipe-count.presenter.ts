@@ -5,6 +5,7 @@ export class IngredientWithRecipeCountPresenter {
     return {
       id: ingredient.id.toString(),
       name: ingredient.name,
+      description: ingredient.description,
       totalRecipeCount: ingredient.totalRecipeCount,
     }
   }
