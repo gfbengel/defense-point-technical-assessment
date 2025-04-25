@@ -7,6 +7,7 @@ export class RecipeWithDetailsPresenter {
       title: recipe.title,
       description: recipe.description,
       instructions: recipe.instructions,
+      isFavorite: recipe.isFavorite,
       ingredients: recipe.ingredients.map(ingredient => ({
         id: ingredient.id.toString(),
         name: ingredient.name,
