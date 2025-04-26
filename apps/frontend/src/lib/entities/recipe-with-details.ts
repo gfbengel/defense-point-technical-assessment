@@ -4,6 +4,7 @@ export interface RecipeWithDetails {
   description: string
   instructions: string
   isFavorite: boolean
+  image: string
   ingredients: {
     id: string
     name: string

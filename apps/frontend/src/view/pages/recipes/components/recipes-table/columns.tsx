@@ -8,7 +8,9 @@ import { TooltipContent } from '@/view/components/ui/tooltip'
 import { TooltipProvider, TooltipTrigger } from '@/view/components/ui/tooltip'
 import { Tooltip } from '@/view/components/ui/tooltip'
 import { formatTime } from '@/lib/utils/format-time'
-
+import { Link } from '@tanstack/react-router'
+import { Button } from '@/view/components/ui/button'
+import { EyeIcon } from 'lucide-react'
 
 
 export const columns: ColumnDef<RecipeWithIngredients>[] = [
@@ -24,7 +26,7 @@ export const columns: ColumnDef<RecipeWithIngredients>[] = [
   },
   {
     accessorKey: 'title',
-
+    size: 200,
     header: ({ column }) => (
       <DataTableColumnHeader
         title="Title"
@@ -32,19 +34,17 @@ export const columns: ColumnDef<RecipeWithIngredients>[] = [
       />
     ),
     cell: ({ row }) => {
-      return row.original.title
+      return (<Button variant="link" asChild>
+        <Link to={`/recipes/${row.original.id}`}>
+          <EyeIcon className="size-4" />
+
+          {row.original.title}
+        </Link></Button>)
     },
     meta: {
       nameInViewFilter: 'Title',
     },
-    filterFn: (row, _id, value) => {
-      return row.original.title.toLowerCase().includes(value.toLowerCase())
-    },
-    sortingFn: (a, b) => {
-      return a.original.title.localeCompare(
-        b.original.title,
-      )
-    },
+
   },
 
   {
