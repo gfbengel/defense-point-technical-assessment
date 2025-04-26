@@ -20,10 +20,10 @@ export const appMenu: NavMainItemProps[] = [
         label: 'Ingredients',
       },
 
-      // {
-      //   to: '/recipes',
-      //   label: 'Recipes',
-      // },
+      {
+        to: '/recipes',
+        label: 'Recipes',
+      },
 
       // {
       //   to: '/favorites',

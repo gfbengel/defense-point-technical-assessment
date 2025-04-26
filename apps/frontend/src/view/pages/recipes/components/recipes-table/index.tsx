@@ -1,28 +1,31 @@
 
 import { ColumnDef } from '@tanstack/react-table'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { DEFAULT_PAGE, SortByType } from '@/lib/config/pagination-params'
 import { DEFAULT_PAGE_SIZE } from '@/lib/config/pagination-params'
+import { useFilters } from '@/lib/hooks/use-filters'
+import { defaultOnPaginationChange } from '@/lib/utils/default-on-pagination-change'
+import { sortByToState, stateToSortBy } from '@/lib/utils/table-sort-mapper'
 import { DataTable } from '@/view/components/data-table'
 import { DataTableColumnsVisibilityDropdown } from '@/view/components/data-table/data-table-columns-visibility-dropdown'
 import { DataTableContent } from '@/view/components/data-table/data-table-content'
+import { DataTableFacetedFilter } from '@/view/components/data-table/data-table-faceted-filter'
 import { DataTablePagination } from '@/view/components/data-table/data-table-pagination'
 import { DataTableResetFilters } from '@/view/components/data-table/data-table-reset-filters'
 import { DataTableTextFilter } from '@/view/components/data-table/data-table-text-filter'
 
 import { columns as baseColumns } from './columns'
-import { IngredientWithRecipeCount } from '@/lib/entities/ingredient-with-recipe-count'
-import { defaultOnPaginationChange } from '@/lib/utils'
-import { sortByToState, stateToSortBy } from '@/lib/utils/table-sort-mapper'
-import { useFilters } from '@/lib/hooks/use-filters'
+import { RecipeWithIngredients } from '@/lib/entities/recipe-with-ingredients'
+import { useIngredientListQuery } from '@/lib/hooks/queries/use-ingredients-list-query'
 
-interface IngredientsTableProps {
-  ingredients: IngredientWithRecipeCount[]
+
+interface RecipesTableProps {
+  recipes: RecipeWithIngredients[]
   totalRowsCount: number
 }
 
-export function IngredientsTable({ ingredients, totalRowsCount }: IngredientsTableProps) {
+export function RecipesTable({ recipes, totalRowsCount, }: RecipesTableProps) {
 
   const {
     filters,
@@ -31,10 +34,14 @@ export function IngredientsTable({ ingredients, totalRowsCount }: IngredientsTab
     setFilters,
     setSortBy,
     resetFilters
-  } = useFilters('/_app/ingredients/')
+  } = useFilters('/_app/recipes/')
 
 
-  const columns = useMemo<ColumnDef<IngredientWithRecipeCount>[]>(() => [...baseColumns], [])
+  const { ingredients, isLoading: isIngredientsListLoading } = useIngredientListQuery()
+
+
+  const columns = useMemo<ColumnDef<RecipeWithIngredients>[]>(() => [...baseColumns], [])
+
 
   const paginationState = useMemo(() => ({
     pageSize: filters?.pageSize || DEFAULT_PAGE_SIZE,
@@ -43,23 +50,42 @@ export function IngredientsTable({ ingredients, totalRowsCount }: IngredientsTab
 
   const sortingState = sortByToState(filters.sortBy);
 
-  const handleFilterChange = (dataFilters: Partial<IngredientWithRecipeCount>) => {
+  const handleFilterChange = (dataFilters: Partial<RecipeWithIngredients>) => {
+
     setFilters({
       filters: dataFilters
-    })
+    });
   }
 
   const handlePaginationChange = defaultOnPaginationChange({ setFilters, paginationState })
 
+  const handleCategoryFilterChange = useCallback((ingredientIds: string[]) => {
+
+    if (ingredientIds.length === 0) {
+      setFilters({
+        ingredientIds: undefined,
+      })
+    } else {
+      setFilters({
+        ingredientIds: ingredientIds,
+      })
+    }
+  }, [setFilters])
+
+  if (isIngredientsListLoading) {
+    return null
+  }
+
   return (
-    <DataTable<IngredientWithRecipeCount>
+    <DataTable<RecipeWithIngredients>
       disableSelectColumn
       manualFiltering={true}
       manualPagination={true}
       manualSorting={true}
-      data={ingredients}
+      data={recipes}
       columns={columns}
       pagination={paginationState}
+      onSelectRow={(selectedRows: any) => console.log(selectedRows)}
       paginationOptions={{
         onPaginationChange: handlePaginationChange,
         rowCount: totalRowsCount,
@@ -75,7 +101,13 @@ export function IngredientsTable({ ingredients, totalRowsCount }: IngredientsTab
         return setSortBy(stateToSortBy(newSortingState) as SortByType);
       }}
 
+
+      columnVisibility={{
+        ingredientIds: false,
+      }}
+
     >
+
       <div className=" mb-4 flex flex-col gap-2 lg:gap-4">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 lg:gap-4">
           <div className="order-2 lg:order-1 flex flex-1 items-center gap-4">
@@ -101,12 +133,20 @@ export function IngredientsTable({ ingredients, totalRowsCount }: IngredientsTab
         </div>
 
         <div className="flex justify-between items-center gap-2 lg:gap-4">
+          <DataTableFacetedFilter
+            options={ingredients.map((ingredient) => ({
+              label: ingredient.name,
+              value: ingredient.id,
+              count: ingredient.totalRecipeCount,
+            }))}
+            column="ingredientIds"
+            title="Ingredients"
+            onSelect={handleCategoryFilterChange}
 
+          />
 
         </div>
       </div>
-
-
 
       <DataTableContent />
 

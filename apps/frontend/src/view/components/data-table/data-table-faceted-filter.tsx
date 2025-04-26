@@ -16,13 +16,14 @@ import {
   CommandList,
   CommandSeparator,
 } from '../ui/command'
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { ScrollArea } from '../ui/scroll-area'
-import { Separator } from '../ui/separator'
+import { Popover, PopoverContent, PopoverTrigger } from '@/view/components/ui/popover'
+import { ScrollArea } from '@/view/components/ui/scroll-area'
+import { Separator } from '@/view/components/ui/separator'
 import { useDataTable } from './data-table-context'
 
-interface DataTableFacetedFilterProps<_TData, _TValue> {
-  column: string //Column<TData, TValue>
+
+interface DataTableFacetedFilterProps {
+  column: string
   title?: string
   options: {
     label: string
@@ -34,12 +35,12 @@ interface DataTableFacetedFilterProps<_TData, _TValue> {
   onSelect?: (value: string[]) => void
 }
 
-export function DataTableFacetedFilter<TData, TValue>({
+export function DataTableFacetedFilter({
   column,
   title,
   options,
   onSelect,
-}: DataTableFacetedFilterProps<TData, TValue>) {
+}: DataTableFacetedFilterProps) {
   const { table } = useDataTable()
 
   const tableColumn = table.getColumn(column)
@@ -47,7 +48,7 @@ export function DataTableFacetedFilter<TData, TValue>({
   // const facets = tableColumn?.getFacetedUniqueValues()
   const selectedValues = useMemo(
     () => {
-      return new Set(tableColumn?.getFilterValue() as string[])
+      return new Set(tableColumn?.getFilterValue() as string[] ?? [])
     },
     [tableColumn]
   )
@@ -134,6 +135,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                               selectedValues.add(option.value)
                             }
                             const filterValues = Array.from(selectedValues)
+
                             if (filterValues.length) {
                               onSelect?.(filterValues)
                               tableColumn?.setFilterValue(filterValues)
@@ -187,6 +189,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                 <CommandGroup>
                   <CommandItem
                     onSelect={() => {
+                      console.log('clear filters')
                       tableColumn?.setFilterValue(undefined)
                       onSelect?.([])
                     }}

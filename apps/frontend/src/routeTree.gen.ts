@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './router/routes/__root'
 import { Route as AppImport } from './router/routes/_app'
 import { Route as AppIndexImport } from './router/routes/_app/index'
+import { Route as AppRecipesIndexImport } from './router/routes/_app/recipes/index'
 import { Route as AppIngredientsIndexImport } from './router/routes/_app/ingredients/index'
 
 // Create/Update Routes
@@ -25,6 +26,12 @@ const AppRoute = AppImport.update({
 const AppIndexRoute = AppIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppRecipesIndexRoute = AppRecipesIndexImport.update({
+  id: '/recipes/',
+  path: '/recipes/',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -59,6 +66,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIngredientsIndexImport
       parentRoute: typeof AppImport
     }
+    '/_app/recipes/': {
+      id: '/_app/recipes/'
+      path: '/recipes'
+      fullPath: '/recipes'
+      preLoaderRoute: typeof AppRecipesIndexImport
+      parentRoute: typeof AppImport
+    }
   }
 }
 
@@ -67,11 +81,13 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppIngredientsIndexRoute: typeof AppIngredientsIndexRoute
+  AppRecipesIndexRoute: typeof AppRecipesIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppIngredientsIndexRoute: AppIngredientsIndexRoute,
+  AppRecipesIndexRoute: AppRecipesIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -80,11 +96,13 @@ export interface FileRoutesByFullPath {
   '': typeof AppRouteWithChildren
   '/': typeof AppIndexRoute
   '/ingredients': typeof AppIngredientsIndexRoute
+  '/recipes': typeof AppRecipesIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/ingredients': typeof AppIngredientsIndexRoute
+  '/recipes': typeof AppRecipesIndexRoute
 }
 
 export interface FileRoutesById {
@@ -92,14 +110,15 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_app/': typeof AppIndexRoute
   '/_app/ingredients/': typeof AppIngredientsIndexRoute
+  '/_app/recipes/': typeof AppRecipesIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/' | '/ingredients'
+  fullPaths: '' | '/' | '/ingredients' | '/recipes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ingredients'
-  id: '__root__' | '/_app' | '/_app/' | '/_app/ingredients/'
+  to: '/' | '/ingredients' | '/recipes'
+  id: '__root__' | '/_app' | '/_app/' | '/_app/ingredients/' | '/_app/recipes/'
   fileRoutesById: FileRoutesById
 }
 
@@ -128,7 +147,8 @@ export const routeTree = rootRoute
       "filePath": "_app.tsx",
       "children": [
         "/_app/",
-        "/_app/ingredients/"
+        "/_app/ingredients/",
+        "/_app/recipes/"
       ]
     },
     "/_app/": {
@@ -137,6 +157,10 @@ export const routeTree = rootRoute
     },
     "/_app/ingredients/": {
       "filePath": "_app/ingredients/index.tsx",
+      "parent": "/_app"
+    },
+    "/_app/recipes/": {
+      "filePath": "_app/recipes/index.tsx",
       "parent": "/_app"
     }
   }
