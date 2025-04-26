@@ -1,8 +1,9 @@
 import { AppSidebar } from "@/view/components/app-sidebar"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/view/components/ui/sidebar'
 import { BreadcrumbsNavbar } from '@/view/components/breadcrumbs-navbar'
+import { Outlet } from "@tanstack/react-router"
 
-export function AppLayout({ children }: { children: React.ReactNode }) {
+export function AppLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -15,8 +16,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-
-        {children}
+        <Outlet />
       </SidebarInset>
     </SidebarProvider>
   )
