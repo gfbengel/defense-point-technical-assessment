@@ -53,8 +53,11 @@ export class DrizzleIngredientsRepository implements IngredientsRepository {
 
     const [sortColumn, sortDirection] = sortBy ? sortBy.split('.') : ['name', 'asc']
 
-    const orderByFn = (sortDirection === 'asc' ? asc : desc)(dbSchema.ingredients[sortColumn])
-
+    const orderByFn = (sortDirection === 'asc' ? asc : desc)(
+      sortColumn === 'totalRecipeCount'
+        ? sql`MAX(COALESCE(total_recipe_count.count, 0))`
+        : dbSchema.ingredients[sortColumn]
+    )
 
 
     const whereClauses = [
