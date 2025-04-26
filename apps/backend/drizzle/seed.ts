@@ -39,7 +39,7 @@ async function main() {
   console.log('Generating 500 ingredients...')
 
 
-  const ingredientBatch: IngredientCreateSchema[] = Array.from({ length: 500 }, () => {
+  const generatedIngredients: IngredientCreateSchema[] = Array.from({ length: 500 }, () => {
     return {
       id: ulid(),
       name: faker.food.ingredient(),
@@ -49,6 +49,21 @@ async function main() {
 
     }
   })
+
+  // Remove duplicate ingredients based on name
+  console.log('Removing duplicate ingredients...')
+  const uniqueIngredientNames = new Set<string>()
+  const ingredientBatch: IngredientCreateSchema[] = []
+
+  for (const ingredient of generatedIngredients) {
+    if (!uniqueIngredientNames.has(ingredient.name.toLowerCase())) {
+      uniqueIngredientNames.add(ingredient.name.toLowerCase())
+      ingredientBatch.push(ingredient)
+    }
+  }
+
+  console.log(`Removed ${ingredientBatch.length - ingredientBatch.length} duplicate ingredients`)
+
 
   // Insert ingredients in batches
   console.log('Inserting ingredients...')
