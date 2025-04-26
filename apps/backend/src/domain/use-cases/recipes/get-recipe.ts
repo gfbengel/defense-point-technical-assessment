@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { RecipeWithIngredients } from "@/domain/entities/value-objects/recipe-with-ingredients";
+import { RecipeWithDetails } from "@/domain/entities/value-objects/recipe-with-details";
 import { RecipesRepository } from "@/domain/repositories/recipes.repository";
 import { ResourceNotFoundError } from "@/core/errors/errors/resource-not-found-error";
 
@@ -8,7 +8,7 @@ type GetRecipeUseCaseRequest = {
 }
 
 interface GetRecipeUseCaseResponse {
-  recipe: RecipeWithIngredients
+  recipe: RecipeWithDetails
 }
 
 @Injectable()

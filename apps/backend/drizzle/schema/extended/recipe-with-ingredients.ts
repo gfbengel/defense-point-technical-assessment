@@ -6,6 +6,7 @@ export const recipeWithIngredientsSchema = recipeSelectSchema.extend({
     id: z.string(),
     name: z.string(),
   })),
+  totalIngredientCount: z.number().default(0),
 }).omit({
   createdAt: true,
   updatedAt: true,

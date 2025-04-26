@@ -1,6 +1,6 @@
 import { Get, Param, Controller } from "@nestjs/common";
 import { GetRecipeUseCase } from "@/domain/use-cases/recipes/get-recipe";
-import { RecipeWithIngredientsPresenter } from "../../presenters/recipe-with-ingredients.presenter";
+import { RecipeWithDetailsPresenter } from "../../presenters/recipe-with-details.presenter";
 import { ParseULIDPipe } from "../../pipes/parse-ulid.pipe";
 
 @Controller(':id')
@@ -12,7 +12,7 @@ export class GetRecipeController {
     const { recipe } = await this.getRecipeUseCase.execute({ id })
 
     return {
-      recipe: RecipeWithIngredientsPresenter.toHTTP(recipe)
+      recipe: RecipeWithDetailsPresenter.toHTTP(recipe)
     }
   }
 }

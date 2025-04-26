@@ -12,7 +12,7 @@ export class RecipeWithIngredientsPresenter {
         name: ingredient.name,
       })),
       timeToCookInMinutes: recipe.timeToCookInMinutes,
-
+      totalIngredientCount: recipe.totalIngredientCount,
     }
   }
 }

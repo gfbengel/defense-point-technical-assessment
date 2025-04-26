@@ -19,7 +19,8 @@ export class DrizzleRecipeWithIngredientsMapper {
         ingredients: recipe.ingredients.map(ingredient => ({
           id: new UniqueEntityId(ingredient.id),
           name: ingredient.name,
-        }))
+        })),
+        totalIngredientCount: recipe.totalIngredientCount
       }
     )
   }

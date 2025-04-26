@@ -8,6 +8,7 @@ interface RecipeWithIngredientsProps extends Omit<RecipeProps, 'instructions' | 
     id: UniqueEntityId
     name: string
   }[]
+  totalIngredientCount: number
 }
 
 
@@ -41,6 +42,10 @@ export class RecipeWithIngredients extends ValueObject<RecipeWithIngredientsProp
 
   get ingredients() {
     return this.props.ingredients
+  }
+
+  get totalIngredientCount() {
+    return this.props.totalIngredientCount
   }
 
   static create(props: RecipeWithIngredientsProps) {

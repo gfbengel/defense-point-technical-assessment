@@ -3,7 +3,7 @@ import { FindManyRecipesOptions, FindManyRecipesResponse, RecipesRepository } fr
 import { Injectable } from "@nestjs/common";
 import { DrizzleService } from "../drizzle.service";
 import { DrizzleRecipeWithIngredientsMapper } from "../mappers/drizzle-recipe-with-ingredients.mapper";
-import { and, eq, asc, desc, inArray, ilike, isNull, sql, count, not } from "drizzle-orm";
+import { and, eq, asc, desc, inArray, ilike, isNull, sql, count, not, countDistinct } from "drizzle-orm";
 import { dbSchema } from "drizzle/schema";
 import { DrizzleRecipeWithDetailsMapper } from "../mappers/drizzle-recipe-with-details.mapper";
 import { RecipeWithDetails } from "@/domain/entities/value-objects/recipe-with-details";
@@ -75,7 +75,13 @@ export class DrizzleRecipesRepository implements RecipesRepository {
 
     const [sortColumn, sortDirection] = sortBy ? sortBy.split('.') : ['title', 'asc']
 
-    const orderByFn = (sortDirection === 'asc' ? asc : desc)(dbSchema.recipes[sortColumn])
+
+    const orderByFn = (sortDirection === 'asc' ? asc : desc)(
+      sortColumn === 'totalIngredientCount'
+        ? sql`MAX(COALESCE(total_ingredients_count.count, 0))`
+        : dbSchema.recipes[sortColumn]
+    )
+
 
     const whereClauses = [
       isNull(dbSchema.recipes.deletedAt)
@@ -96,6 +102,18 @@ export class DrizzleRecipesRepository implements RecipesRepository {
           isNull(dbSchema.ingredients.deletedAt)
         ))
         .orderBy(asc(dbSchema.ingredients.name))
+    )
+
+
+    const totalIngredientCount = this.drizzle.db.$with('total_ingredients_count').as(
+      this.drizzle.db
+        .select({
+          recipeId: dbSchema.recipeIngredients.recipeId,
+          count: countDistinct(dbSchema.recipeIngredients.id).mapWith(Number).as('count')
+        })
+        .from(dbSchema.recipeIngredients)
+        .where(isNull(dbSchema.recipeIngredients.deletedAt))
+        .groupBy(dbSchema.recipeIngredients.recipeId)
     )
 
 
@@ -152,15 +170,17 @@ export class DrizzleRecipesRepository implements RecipesRepository {
       ingredients: sql<{ id: string, name: string }[]>`COALESCE(
         json_agg(ingredients_details) FILTER (WHERE ingredients_details.id IS NOT NULL),
         '[]'::json
-      )`
+      )`,
+      totalIngredientCount: sql<number>`MAX(COALESCE(total_ingredients_count.count, 0))`.mapWith(Number)
     }
 
 
     const recipes = await this.drizzle.db
-      .with(ingredientsDetails, ingredientsFilter)
+      .with(ingredientsDetails, totalIngredientCount, ingredientsFilter)
       .select(fieldsToSelect)
       .from(dbSchema.recipes)
       .leftJoin(ingredientsDetails, eq(dbSchema.recipes.id, ingredientsDetails.recipeId))
+      .leftJoin(totalIngredientCount, eq(dbSchema.recipes.id, totalIngredientCount.recipeId))
       .where(and(...whereClauses))
       .groupBy(dbSchema.recipes.id)
       .offset((page - 1) * pageSize)
