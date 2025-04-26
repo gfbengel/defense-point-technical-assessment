@@ -1,7 +1,5 @@
 import * as React from "react"
-import {
-  SquareTerminal,
-} from "lucide-react"
+
 
 import { NavMain } from "@/view/components/nav-main"
 import {
@@ -11,35 +9,7 @@ import {
   SidebarHeader,
 } from "@/view/components/ui/sidebar"
 import { ThemeSwitcher } from "./theme-switcher"
-
-// This is sample data.
-const data = {
-
-  navMain: [
-    {
-      title: "General",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "Ingredients",
-          url: "#",
-        },
-        {
-          title: "Recipes",
-          url: "#",
-        },
-        {
-          title: "Favorites",
-          url: "#",
-        },
-      ],
-    },
-
-  ],
-
-}
+import { appMenu } from "@/lib/config/app-menu"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -48,7 +18,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         Recipes
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={appMenu} />
 
       </SidebarContent>
       <SidebarFooter>

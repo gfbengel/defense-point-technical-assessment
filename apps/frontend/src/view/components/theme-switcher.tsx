@@ -26,8 +26,6 @@ export function ThemeSwitcher() {
             <SunMoon
               className={cn(
                 'size-5 transition-all',
-                // 'text-zinc-700 group-hover/sidebar-menu-button:text-primary-700',
-                // 'dark:text-zinc-300 dark:group-hover/sidebar-menu-button:text-zinc-100',
               )}
             />
           </span>
