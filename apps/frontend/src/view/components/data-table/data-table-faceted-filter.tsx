@@ -1,7 +1,6 @@
 'use client'
 import { Check, PlusCircle } from 'lucide-react'
 import * as React from 'react'
-import { useMemo } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -45,19 +44,13 @@ export function DataTableFacetedFilter({
 
   const tableColumn = table.getColumn(column)
 
-  // const facets = tableColumn?.getFacetedUniqueValues()
-  const selectedValues = useMemo(
-    () => {
-      return new Set(tableColumn?.getFilterValue() as string[] ?? [])
-    },
-    [tableColumn]
+  const [selectedValues, setSelectedValues] = React.useState<Set<string>>(
+    new Set(tableColumn?.getFilterValue() as string[] ?? [])
   )
 
-  // useEffect(() => {
-  //   if (onSelect) {
-  //     onSelect(Array.from(selectedValues))
-  //   }
-  // }, [selectedValues, onSelect])
+  React.useEffect(() => {
+    setSelectedValues(new Set(tableColumn?.getFilterValue() as string[] ?? []))
+  }, [tableColumn])
 
   const hasSubLabel = options.some((option) => option.subLabel)
 
@@ -116,7 +109,6 @@ export function DataTableFacetedFilter({
                 "max-w-70 min-w-55"
               )}>
                 <div className={cn(
-                  // "bg-red-500",
                   "overflow-hidden",
                   (options.length > 5) && (hasSubLabel ? 'h-60.25' : 'h-40'),
 
@@ -129,13 +121,15 @@ export function DataTableFacetedFilter({
                           className="max-w-68"
                           key={option.value}
                           onSelect={() => {
+                            const newSelectedValues = new Set(selectedValues)
                             if (isSelected) {
-                              selectedValues.delete(option.value)
+                              newSelectedValues.delete(option.value)
                             } else {
-                              selectedValues.add(option.value)
+                              newSelectedValues.add(option.value)
                             }
-                            const filterValues = Array.from(selectedValues)
+                            setSelectedValues(newSelectedValues)
 
+                            const filterValues = Array.from(newSelectedValues)
                             if (filterValues.length) {
                               onSelect?.(filterValues)
                               tableColumn?.setFilterValue(filterValues)
@@ -164,11 +158,7 @@ export function DataTableFacetedFilter({
                               <span className="text-xs text-muted-foreground">{option.subLabel}</span>
                             )}
                           </div>
-                          {/* {facets?.get(option.value) && (
-                        <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
-                          {facets.get(option.value)}
-                        </span>
-                      )} */}
+
                           {option.count && (
                             <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
                               {option.count}
@@ -189,7 +179,7 @@ export function DataTableFacetedFilter({
                 <CommandGroup>
                   <CommandItem
                     onSelect={() => {
-                      console.log('clear filters')
+                      setSelectedValues(new Set())
                       tableColumn?.setFilterValue(undefined)
                       onSelect?.([])
                     }}
